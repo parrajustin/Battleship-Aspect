@@ -1,12 +1,6 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-
-import javax.swing.AbstractAction;
+import java.awt.Dimension;
 
 import battleship.BattleshipDialog;
-import battleship.BoardPanel;
-import battleship.model.Place;
 
 privileged aspect Entry {
 
@@ -16,7 +10,7 @@ privileged aspect Entry {
 	public static void main(String[] args) {
 		
 		System.out.println("test2");
-        BattleshipDialog dialog = new BattleshipDialog();
+        BattleshipDialog dialog = new BattleshipDialog(new Dimension(335, 550));
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(BattleshipDialog.DISPOSE_ON_CLOSE);
 	}
