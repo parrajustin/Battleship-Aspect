@@ -1,9 +1,14 @@
+import static battleship.Constants.DEFAULT_BOARD_COLOR;
+import static battleship.Constants.DEFAULT_HIT_COLOR;
+import static battleship.Constants.DEFAULT_LEFT_MARGIN;
+import static battleship.Constants.DEFAULT_MISS_COLOR;
+import static battleship.Constants.DEFAULT_TOP_MARGIN;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -13,15 +18,15 @@ import javax.swing.JPanel;
 
 import battleship.BattleshipDialog;
 import battleship.BoardPanel;
-import static battleship.Constants.*;
-import battleship.model.*;
+import battleship.model.Board;
+import battleship.model.Ship;
 
 
 privileged aspect AddStrategy {
 	private JButton playButton = new JButton("Play");
 	private boolean playMode = false;
 	private BattleshipDialog dialogHolder = null;
-	private JPanel topView;
+	private JPanel ships;
 	
 	/**
 	 * Done to create the practice and play buttons
@@ -79,14 +84,32 @@ privileged aspect AddStrategy {
 		view.add(battleship, BorderLayout.WEST);
 		view.add(carrier, BorderLayout.WEST);
 		
+		Board holder = new Board(10);
+		
+		Random random = new Random();
+        int size = holder.size();
+        for (Ship ship : holder.ships()) {
+            int i = 0;
+            int j = 0;
+            boolean dir = false;
+            do {
+                i = random.nextInt(size) + 1;
+                j = random.nextInt(size) + 1;
+                dir = random.nextBoolean();
+            } while (!holder.placeShip(ship, i, j, dir));
+        }
+		
 		container.add(view);
 		JPanel secondView = new BoardPanel(
-				new Board(10),
+				holder,
 				DEFAULT_TOP_MARGIN, DEFAULT_LEFT_MARGIN, 10,
 	    	    DEFAULT_BOARD_COLOR, DEFAULT_HIT_COLOR, DEFAULT_MISS_COLOR
 				);
 		
 		container.add(secondView);
+		
+//		container.setVisible(false);
+		
 		content.add(container, BorderLayout.CENTER);		
 		
 		return content;	
@@ -103,7 +126,7 @@ privileged aspect AddStrategy {
 	public void playButtonClicked(ActionEvent event) {
 		if( !playMode ) {
 			playMode = true;
-			this.dialogHolder.makeControlPane();
+			this.dialogHolder.startNewGame();
 		}
 	}
 	
