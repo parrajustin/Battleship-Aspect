@@ -1,6 +1,14 @@
-import battleship.BattleshipDialog;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
 
-public aspect Entry {
+import javax.swing.AbstractAction;
+
+import battleship.BattleshipDialog;
+import battleship.BoardPanel;
+import battleship.model.Place;
+
+privileged aspect Entry {
 
 	/**
 	 * @param args
@@ -12,5 +20,4 @@ public aspect Entry {
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(BattleshipDialog.DISPOSE_ON_CLOSE);
 	}
-
 }
