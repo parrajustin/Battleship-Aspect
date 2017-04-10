@@ -17,7 +17,6 @@ privileged aspect AddCheatKey {
 	public boolean cheatModeActive = false;
 	
 	void around(Graphics g): args(g) && this(BoardPanel) && call(void BoardPanel.drawPlaces(Graphics)) {
-		System.out.println("ran");
 		BoardPanel panel = (BoardPanel) thisJoinPoint.getThis();
 		
 		proceed(g);
@@ -48,9 +47,11 @@ privileged aspect AddCheatKey {
 	
 	after(): this(KeyAction) && execution(void KeyAction.actionPerformed(..)) {
 		KeyAction key = (KeyAction) thisJoinPoint.getThis();
+		
+		// if this key action was for the one for cheats do the cheat action
 		if( key.getValue(key.action).equals("Cheat") ) {
-			cheatModeActive = !cheatModeActive;
-			key.boardPanel.paint(key.boardPanel.getGraphics());
+			cheatModeActive = !cheatModeActive; // enable cheat mode to highlight ships
+			key.boardPanel.paint(key.boardPanel.getGraphics()); // call the paint method to actually run the ship highlight advice
 		}
 	}
 }
