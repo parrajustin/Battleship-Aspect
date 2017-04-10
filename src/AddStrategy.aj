@@ -6,7 +6,9 @@ import static battleship.Constants.DEFAULT_TOP_MARGIN;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.Random;
 
@@ -57,26 +59,72 @@ privileged aspect AddStrategy {
 		JPanel view = new JPanel();
 		view.setLayout(new BoxLayout(view, BoxLayout.Y_AXIS));
 		view.setBorder(BorderFactory.createBevelBorder(0,Color.BLACK, Color.GRAY));
+		view.setPreferredSize(new Dimension(80, 150));
 		
 		JPanel mine = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel1 = new JLabel("Minesweeper");
 		mine.add(jlabel1);
+		for( int i = 0; i < 2; i++ ) {
+			JButton button = new JButton("");
+			button.setBorderPainted( false );
+			button.setFocusPainted( false );
+			button.setPreferredSize(new Dimension(10, 10));
+			button.setForeground(Color.GRAY);
+			button.setBackground(Color.GRAY);
+			mine.add(button);
+		}
 		
 		JPanel sub = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel2 = new JLabel("Submarine");
 		sub.add(jlabel2);
+		for( int i = 0; i < 3; i++ ) {
+			JButton button = new JButton("");
+			button.setBorderPainted( false );
+			button.setFocusPainted( false );
+			button.setPreferredSize(new Dimension(10, 10));
+			button.setForeground(Color.GRAY);
+			button.setBackground(Color.GRAY);
+			sub.add(button);
+		}
 		
 		JPanel frigate = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel3 = new JLabel("Frigate");
 		frigate.add(jlabel3);
+		for( int i = 0; i < 3; i++ ) {
+			JButton button = new JButton("");
+			button.setBorderPainted( false );
+			button.setFocusPainted( false );
+			button.setPreferredSize(new Dimension(10, 10));
+			button.setForeground(Color.GRAY);
+			button.setBackground(Color.GRAY);
+			frigate.add(button);
+		}
 		
 		JPanel battleship = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel4 = new JLabel("Battleship");
 		battleship.add(jlabel4);
+		for( int i = 0; i < 4; i++ ) {
+			JButton button = new JButton("");
+			button.setBorderPainted( false );
+			button.setFocusPainted( false );
+			button.setPreferredSize(new Dimension(10, 10));
+			button.setForeground(Color.GRAY);
+			button.setBackground(Color.GRAY);
+			battleship.add(button);
+		}
 		
 		JPanel carrier = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel5 = new JLabel("Aircraft carrier");
 		carrier.add(jlabel5);
+		for( int i = 0; i < 5; i++ ) {
+			JButton button = new JButton("");
+			button.setBorderPainted( false );
+			button.setFocusPainted( false );
+			button.setPreferredSize(new Dimension(10, 10));
+			button.setForeground(Color.GRAY);
+			button.setBackground(Color.GRAY);
+			carrier.add(button);
+		}
 		
 		view.add(mine, BorderLayout.WEST);
 		view.add(sub, BorderLayout.WEST);

@@ -10,7 +10,7 @@ privileged aspect Entry {
 	public static void main(String[] args) {
 		
 		System.out.println("test2");
-        BattleshipDialog dialog = new BattleshipDialog(new Dimension(335, 550));
+        BattleshipDialog dialog = new BattleshipDialog(new Dimension(335, 570));
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(BattleshipDialog.DISPOSE_ON_CLOSE);
 	}
