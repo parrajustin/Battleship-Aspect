@@ -1,6 +1,8 @@
+import java.awt.Dimension;
+
 import battleship.BattleshipDialog;
 
-public aspect Entry {
+privileged aspect Entry {
 
 	/**
 	 * @param args
@@ -8,9 +10,8 @@ public aspect Entry {
 	public static void main(String[] args) {
 		
 		System.out.println("test2");
-        BattleshipDialog dialog = new BattleshipDialog();
+        BattleshipDialog dialog = new BattleshipDialog(new Dimension(335, 550));
         dialog.setVisible(true);
         dialog.setDefaultCloseOperation(BattleshipDialog.DISPOSE_ON_CLOSE);
 	}
-
 }
