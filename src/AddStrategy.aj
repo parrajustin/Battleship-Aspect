@@ -29,6 +29,8 @@ privileged aspect AddStrategy {
 	private boolean playMode = false;
 	private BattleshipDialog dialogHolder = null;
 	private JPanel ships;
+	public JPanel boardPanel;
+	private Board board;
 	
 	JButton[] mineButtons;
 	JButton[] subButtons;
@@ -156,6 +158,7 @@ privileged aspect AddStrategy {
 		view.add(carrier, BorderLayout.WEST);
 		
 		Board holder = new Board(10);
+		this.board = holder;
 		
 		Random random = new Random();
         int size = holder.size();
@@ -205,6 +208,7 @@ privileged aspect AddStrategy {
 				DEFAULT_TOP_MARGIN, DEFAULT_LEFT_MARGIN, 10,
 	    	    DEFAULT_BOARD_COLOR, DEFAULT_HIT_COLOR, DEFAULT_MISS_COLOR
 				);
+		this.boardPanel = secondView;
 		
 		container.add(secondView);
 		container.setVisible(this.playMode);
@@ -216,17 +220,69 @@ privileged aspect AddStrategy {
 	 * Done Whenever the practice button is pushed, used to reset the game if in play mode
 	 */
 	void around(): call(void BattleshipDialog.startNewGame()) && withincode(void BattleshipDialog.playButtonClicked(ActionEvent)) {
-		playMode = false;
+		/**
+		 * We need to reset the other game mode since it doesn't have a nice clean mode
+		 */
+		if( playMode ) {
+			playMode = false;
+			this.ships.setVisible(playMode);
+			
+			resetPlayMode();
+		}
 		proceed();	
-		this.ships.setVisible(playMode);
+	}
+	
+	public void resetPlayMode() {
+		this.mineI = 0;
+		this.subI = 0;
+		this.battleI = 0;
+		this.frigI = 0;
+		this.carrierI = 0;
+		
+		for(JButton b: mineButtons) {
+			b.setForeground(Color.GRAY);
+			b.setBackground(Color.GRAY);
+		}
+		for(JButton b: subButtons) {
+			b.setForeground(Color.GRAY);
+			b.setBackground(Color.GRAY);
+		}
+		for(JButton b: frigButtons) {
+			b.setForeground(Color.GRAY);
+			b.setBackground(Color.GRAY);
+		}
+		for(JButton b: battleButtons) {
+			b.setForeground(Color.GRAY);
+			b.setBackground(Color.GRAY);
+		}
+		for(JButton b: carrierButtons) {
+			b.setForeground(Color.GRAY);
+			b.setBackground(Color.GRAY);
+		}
+		
+		this.board.reset();
+		
+		int size = board.size();
+		Random random = new Random();
+        for (Ship ship : board.ships()) {
+            int i = 0;
+            int j = 0;
+            boolean dir = false;
+            do {
+                i = random.nextInt(size) + 1;
+                j = random.nextInt(size) + 1;
+                dir = random.nextBoolean();
+            } while (!board.placeShip(ship, i, j, dir));
+        }
 	}
 	
 	public void playButtonClicked(ActionEvent event) {
-		if( !playMode ) {
+		if( !playMode )
 			playMode = true;
-			this.dialogHolder.startNewGame();
-			this.ships.setVisible(playMode);
-		}
+		else
+			resetPlayMode();
+		this.dialogHolder.startNewGame();
+		this.ships.setVisible(playMode);
 	}
 	
 }
