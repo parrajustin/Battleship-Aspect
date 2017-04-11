@@ -1,14 +1,9 @@
-import static battleship.Constants.DEFAULT_BOARD_COLOR;
-import static battleship.Constants.DEFAULT_HIT_COLOR;
-import static battleship.Constants.DEFAULT_LEFT_MARGIN;
-import static battleship.Constants.DEFAULT_MISS_COLOR;
-import static battleship.Constants.DEFAULT_TOP_MARGIN;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -30,6 +25,9 @@ privileged aspect AddStrategy {
 	private BattleshipDialog dialogHolder = null;
 	private JPanel ships;
 	private Board board;
+	private BoardPanel panel;
+	
+	private ArrayList<Place> places;
 	
 	JButton[] mineButtons;
 	JButton[] subButtons;
@@ -204,15 +202,39 @@ privileged aspect AddStrategy {
 		container.add(view);
 		BoardPanel secondView = new BoardPanel(
 				holder,
-				DEFAULT_TOP_MARGIN, DEFAULT_LEFT_MARGIN, 10,
-	    	    DEFAULT_BOARD_COLOR, DEFAULT_HIT_COLOR, DEFAULT_MISS_COLOR
+				10, 10, 10,
+				new Color(51, 153, 255), Color.RED, Color.GRAY
 				);
 		secondView.removeMouseListener(secondView.getMouseListeners()[0]);
+		this.panel = secondView;
+		this.places = new ArrayList<Place>();
+//		this.board.places().forEach(action);
+		for (Place p : this.board.places()) {
+		    this.places.add(p);
+		}
 		
 		container.add(secondView);
 		container.setVisible(this.playMode);
 		content.add(container, BorderLayout.CENTER);		
 		return content;	
+	}
+	
+	void around(Place p): args(p) && call(void BoardPanel.placeClicked(Place)) && target(BoardPanel) {
+		boolean temp = p.isHit();
+		proceed(p);
+		
+		if( temp != p.isHit() && this.playMode ) {
+			Random rand = new Random();
+//			System.out.println(this.places.get(rand.nextInt(this.places.size())).x);
+			this.board.hit(this.places.get(rand.nextInt(this.places.size())));
+			this.panel.repaint();
+		}
+//		BoardPanel boardPane = (BoardPanel) thisJoinPoint.getThis();
+//		if( !boardPane.board.isGameOver() && !p.isHit() ) {
+//			proceed(p);
+//			Random rand = new Random();
+//			this.places.get(rand.nextInt(this.places.size())).hit();
+//		}
 	}
 	
 	/**
@@ -284,4 +306,55 @@ privileged aspect AddStrategy {
 		this.ships.setVisible(playMode);
 	}
 	
+}
+
+class Smart {
+	BoardPanel p;
+	Board b;
+	ArrayList<Place> places;
+	Random rand;
+	int[] probs;
+	
+	public Smart(BoardPanel p, Board b, ArrayList<Place> places) {
+		this.p = p;
+		this.b = b;
+		this.places = places;
+		probs = new int[b.size()*b.size()];
+		
+		rand = new Random();
+		for( int i = 0; i < probs.length; i++ ) {
+			probs[i] = rand.nextInt(20) + 1;
+		}
+	}
+	
+	public void fire() {
+		int index = getNext();
+		
+		b.hit(places.get(index));
+		if( places.get(index).hasShip() ) {
+			this.probs[index-1] = (this.probs[index-1] > 0? this.probs[index-1] + rand.nextInt(30) + 20: 0);
+			this.probs[index+1] = (this.probs[index+1] > 0? this.probs[index+1] + rand.nextInt(30) + 20: 0);
+			if( this.probs[((index/b.size())-1) * b.size() + index % b.size()] > 0 )
+				this.probs[((index/b.size())-1) * b.size() + index % b.size()] = this.probs[((index/b.size())-1) * b.size() + index % b.size()] + rand.nextInt(20) + 10;
+			if( this.probs[((index/b.size())+1) * b.size() + index % b.size()] > 0 )
+				this.probs[((index/b.size())+1) * b.size() + index % b.size()] = this.probs[((index/b.size())+1) * b.size() + index % b.size()] + rand.nextInt(20) + 10;
+			
+		}
+	}
+	
+	private int getNext() {
+		int index = 0;
+		int prob = 0;
+		for( int i = 0; i < probs.length; i++ ) {
+			if( probs[i] != 0 && probs[i] > prob ) {
+				prob = probs[i];
+				index = i;
+			} else if( probs[i] != 0 && probs[i] == prob && rand.nextInt(2) > 0 ) {
+				prob = probs[i];
+				index = i;
+			}
+		}
+		
+		return index;
+	}
 }

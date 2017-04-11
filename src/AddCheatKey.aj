@@ -26,7 +26,7 @@ privileged aspect AddCheatKey {
 		proceed(g);
 		
 //		System.out.println(panel.getParent().getY());
-		if( cheatModeActive || panel.getParent().getY() == 36 ) {
+		if( cheatModeActive || panel.getParent().getY() > 0 ) {
 	        final Color oldColor = g.getColor();
 	        for (Place p: panel.board.places()) {
 	    		if (p.hasShip() && !p.isHit()) {
