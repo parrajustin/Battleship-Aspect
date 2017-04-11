@@ -29,7 +29,6 @@ privileged aspect AddStrategy {
 	private boolean playMode = false;
 	private BattleshipDialog dialogHolder = null;
 	private JPanel ships;
-	public JPanel boardPanel;
 	private Board board;
 	
 	JButton[] mineButtons;
@@ -203,12 +202,12 @@ privileged aspect AddStrategy {
         });
 		
 		container.add(view);
-		JPanel secondView = new BoardPanel(
+		BoardPanel secondView = new BoardPanel(
 				holder,
 				DEFAULT_TOP_MARGIN, DEFAULT_LEFT_MARGIN, 10,
 	    	    DEFAULT_BOARD_COLOR, DEFAULT_HIT_COLOR, DEFAULT_MISS_COLOR
 				);
-		this.boardPanel = secondView;
+		secondView.removeMouseListener(secondView.getMouseListeners()[0]);
 		
 		container.add(secondView);
 		container.setVisible(this.playMode);
