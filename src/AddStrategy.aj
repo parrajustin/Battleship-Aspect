@@ -8,7 +8,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.util.Random;
 
@@ -21,6 +20,7 @@ import javax.swing.JPanel;
 import battleship.BattleshipDialog;
 import battleship.BoardPanel;
 import battleship.model.Board;
+import battleship.model.Place;
 import battleship.model.Ship;
 
 
@@ -29,6 +29,18 @@ privileged aspect AddStrategy {
 	private boolean playMode = false;
 	private BattleshipDialog dialogHolder = null;
 	private JPanel ships;
+	
+	JButton[] mineButtons;
+	JButton[] subButtons;
+	JButton[] frigButtons;
+	JButton[] battleButtons;
+	JButton[] carrierButtons;
+	
+	int mineI = 0;
+	int subI = 0;
+	int frigI = 0;
+	int battleI = 0;
+	int carrierI = 0;
 	
 	/**
 	 * Done to create the practice and play buttons
@@ -54,6 +66,7 @@ privileged aspect AddStrategy {
 		JPanel content = proceed();
 		
 		JPanel container = new JPanel();
+		this.ships = container;
 		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
 		
 		JPanel view = new JPanel();
@@ -64,6 +77,7 @@ privileged aspect AddStrategy {
 		JPanel mine = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel1 = new JLabel("Minesweeper");
 		mine.add(jlabel1);
+		this.mineButtons = new JButton[2];
 		for( int i = 0; i < 2; i++ ) {
 			JButton button = new JButton("");
 			button.setBorderPainted( false );
@@ -72,11 +86,13 @@ privileged aspect AddStrategy {
 			button.setForeground(Color.GRAY);
 			button.setBackground(Color.GRAY);
 			mine.add(button);
+			this.mineButtons[i] = button;
 		}
 		
 		JPanel sub = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel2 = new JLabel("Submarine");
 		sub.add(jlabel2);
+		this.subButtons = new JButton[3];
 		for( int i = 0; i < 3; i++ ) {
 			JButton button = new JButton("");
 			button.setBorderPainted( false );
@@ -85,11 +101,13 @@ privileged aspect AddStrategy {
 			button.setForeground(Color.GRAY);
 			button.setBackground(Color.GRAY);
 			sub.add(button);
+			this.subButtons[i] = button;
 		}
 		
 		JPanel frigate = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel3 = new JLabel("Frigate");
 		frigate.add(jlabel3);
+		this.frigButtons = new JButton[3];
 		for( int i = 0; i < 3; i++ ) {
 			JButton button = new JButton("");
 			button.setBorderPainted( false );
@@ -98,11 +116,13 @@ privileged aspect AddStrategy {
 			button.setForeground(Color.GRAY);
 			button.setBackground(Color.GRAY);
 			frigate.add(button);
+			this.frigButtons[i] = button;
 		}
 		
 		JPanel battleship = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel4 = new JLabel("Battleship");
 		battleship.add(jlabel4);
+		this.battleButtons = new JButton[4];
 		for( int i = 0; i < 4; i++ ) {
 			JButton button = new JButton("");
 			button.setBorderPainted( false );
@@ -111,11 +131,13 @@ privileged aspect AddStrategy {
 			button.setForeground(Color.GRAY);
 			button.setBackground(Color.GRAY);
 			battleship.add(button);
+			this.battleButtons[i] = button;
 		}
 		
 		JPanel carrier = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel jlabel5 = new JLabel("Aircraft carrier");
 		carrier.add(jlabel5);
+		this.carrierButtons = new JButton[5];
 		for( int i = 0; i < 5; i++ ) {
 			JButton button = new JButton("");
 			button.setBorderPainted( false );
@@ -124,6 +146,7 @@ privileged aspect AddStrategy {
 			button.setForeground(Color.GRAY);
 			button.setBackground(Color.GRAY);
 			carrier.add(button);
+			this.carrierButtons[i] = button;
 		}
 		
 		view.add(mine, BorderLayout.WEST);
@@ -146,6 +169,35 @@ privileged aspect AddStrategy {
                 dir = random.nextBoolean();
             } while (!holder.placeShip(ship, i, j, dir));
         }
+        holder.addBoardChangeListener(new Board.BoardChangeAdapter() {
+            public void hit(Place place, int numOfShots) {
+            	if( place.hasShip() && place.ship().name() == "Minesweeper" ) {
+            		mineButtons[mineI].setForeground(Color.RED);
+            		mineButtons[mineI].setBackground(Color.RED);
+            		mineI++;
+            	}
+            	else if( place.hasShip() && place.ship().name() == "Submarine" ) {
+            		subButtons[subI].setForeground(Color.RED);
+            		subButtons[subI].setBackground(Color.RED);
+            		subI++;
+            	}
+            	else if( place.hasShip() && place.ship().name() == "Frigate" ) {
+            		frigButtons[frigI].setForeground(Color.RED);
+            		frigButtons[frigI].setBackground(Color.RED);
+            		frigI++;
+            	}
+            	else if( place.hasShip() && place.ship().name() == "Battleship" ) {
+            		battleButtons[battleI].setForeground(Color.RED);
+            		battleButtons[battleI].setBackground(Color.RED);
+            		battleI++;
+            	}
+            	else if( place.hasShip() && place.ship().name() == "Aircraft carrier" ) {
+            		carrierButtons[carrierI].setForeground(Color.RED);
+            		carrierButtons[carrierI].setBackground(Color.RED);
+            		carrierI++;
+            	}
+            }
+        });
 		
 		container.add(view);
 		JPanel secondView = new BoardPanel(
@@ -155,11 +207,8 @@ privileged aspect AddStrategy {
 				);
 		
 		container.add(secondView);
-		
-//		container.setVisible(false);
-		
+		container.setVisible(this.playMode);
 		content.add(container, BorderLayout.CENTER);		
-		
 		return content;	
 	}
 	
@@ -169,12 +218,14 @@ privileged aspect AddStrategy {
 	void around(): call(void BattleshipDialog.startNewGame()) && withincode(void BattleshipDialog.playButtonClicked(ActionEvent)) {
 		playMode = false;
 		proceed();	
+		this.ships.setVisible(playMode);
 	}
 	
 	public void playButtonClicked(ActionEvent event) {
 		if( !playMode ) {
 			playMode = true;
 			this.dialogHolder.startNewGame();
+			this.ships.setVisible(playMode);
 		}
 	}
 	
