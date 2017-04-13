@@ -26,6 +26,7 @@ privileged aspect AddStrategy {
 	private JPanel ships;
 	private Board board;
 	private BoardPanel panel;
+	private Smart ai;
 	
 	private ArrayList<Place> places;
 	
@@ -213,6 +214,8 @@ privileged aspect AddStrategy {
 		    this.places.add(p);
 		}
 		
+		ai = new Smart(secondView, holder, places);
+		
 		container.add(secondView);
 		container.setVisible(this.playMode);
 		content.add(container, BorderLayout.CENTER);		
@@ -226,7 +229,7 @@ privileged aspect AddStrategy {
 		if( temp != p.isHit() && this.playMode ) {
 			Random rand = new Random();
 //			System.out.println(this.places.get(rand.nextInt(this.places.size())).x);
-			this.board.hit(this.places.get(rand.nextInt(this.places.size())));
+			ai.fire();
 			this.panel.repaint();
 		}
 //		BoardPanel boardPane = (BoardPanel) thisJoinPoint.getThis();
@@ -323,22 +326,44 @@ class Smart {
 		
 		rand = new Random();
 		for( int i = 0; i < probs.length; i++ ) {
-			probs[i] = rand.nextInt(20) + 1;
+			probs[i] = rand.nextInt(10) + 1;
 		}
 	}
 	
 	public void fire() {
-		int index = getNext();
+		int index;
+		do {
+			index = getNext();
+		} while( places.get(index).isHit() );
 		
 		b.hit(places.get(index));
 		if( places.get(index).hasShip() ) {
-			this.probs[index-1] = (this.probs[index-1] > 0? this.probs[index-1] + rand.nextInt(30) + 20: 0);
-			this.probs[index+1] = (this.probs[index+1] > 0? this.probs[index+1] + rand.nextInt(30) + 20: 0);
-			if( this.probs[((index/b.size())-1) * b.size() + index % b.size()] > 0 )
-				this.probs[((index/b.size())-1) * b.size() + index % b.size()] = this.probs[((index/b.size())-1) * b.size() + index % b.size()] + rand.nextInt(20) + 10;
-			if( this.probs[((index/b.size())+1) * b.size() + index % b.size()] > 0 )
-				this.probs[((index/b.size())+1) * b.size() + index % b.size()] = this.probs[((index/b.size())+1) * b.size() + index % b.size()] + rand.nextInt(20) + 10;
-			
+			this.change(index, 0, 3, 1);
+		} else {
+			this.change(index, 0, 3, -1);
+		}
+		this.probs[index] = 0;
+	}
+	
+	public void setProb(int row, int col, int val) {
+		probs[row*b.size() + col] = val;
+	}
+//	public void getProb(int row, int col) {
+//		probs[]
+//	}
+	
+	private void change(int index, int min, int max, int modifier) {
+		if( index % b.size() != 0 && this.probs[index-1] != 0 )
+			this.probs[index-1] = this.probs[index-1] + (rand.nextInt(max-min) + min) * modifier;
+		if( index % b.size() != b.size()-1 && this.probs[index+1] != 0 )
+			this.probs[index+1] = this.probs[index+1] + (rand.nextInt(max-min) + min) * modifier;
+		if( index / b.size() != 0 && this.probs[((index/b.size())-1) * b.size() + index % b.size()] > 0 ) {
+			int north = ((index/b.size())-1) * b.size() + index % b.size();
+			this.probs[north] = this.probs[north] + (rand.nextInt(max-min) + min) * modifier;
+		}
+		if( index / b.size() != b.size()-1 && this.probs[((index/b.size())+1) * b.size() + index % b.size()] > 0 ) {
+			int south = ((index/b.size())+1) * b.size() + index % b.size();
+			this.probs[south] = this.probs[south] + (rand.nextInt(max-min) + min) * modifier;
 		}
 	}
 	
