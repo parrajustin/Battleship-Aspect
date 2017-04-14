@@ -61,6 +61,16 @@ public abstract class Strategy {
 	}
 	
 	/**
+	 * Check if a coordinate is valid
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	protected boolean validCoord(int row, int col) {
+		return (row >= 0 && row < b.size() && col >= 0 && col < b.size());
+	}
+	
+	/**
 	 * Retrieves a place based on its row and column
 	 * @param row
 	 * @param col

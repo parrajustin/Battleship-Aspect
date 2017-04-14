@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import ai.*;
 import battleship.BattleshipDialog;
 import battleship.BoardPanel;
 import battleship.model.Board;
@@ -57,6 +58,8 @@ privileged aspect AddStrategy {
 
         playButton.addActionListener(this::playButtonClicked);
 	}
+	
+//	public voi
 	
 	/**
 	 * Done to add the new control panel additions
@@ -309,77 +312,4 @@ privileged aspect AddStrategy {
 		this.ships.setVisible(playMode);
 	}
 	
-}
-
-class Smart {
-	BoardPanel p;
-	Board b;
-	ArrayList<Place> places;
-	Random rand;
-	int[] probs;
-	
-	public Smart(BoardPanel p, Board b, ArrayList<Place> places) {
-		this.p = p;
-		this.b = b;
-		this.places = places;
-		probs = new int[b.size()*b.size()];
-		
-		rand = new Random();
-		for( int i = 0; i < probs.length; i++ ) {
-			probs[i] = rand.nextInt(10) + 1;
-		}
-	}
-	
-	public void fire() {
-		int index;
-		do {
-			index = getNext();
-		} while( places.get(index).isHit() );
-		
-		b.hit(places.get(index));
-		if( places.get(index).hasShip() ) {
-			this.change(index, 0, 3, 1);
-		} else {
-			this.change(index, 0, 3, -1);
-		}
-		this.probs[index] = 0;
-	}
-	
-	public void setProb(int row, int col, int val) {
-		probs[row*b.size() + col] = val;
-	}
-//	public void getProb(int row, int col) {
-//		probs[]
-//	}
-	
-	private void change(int index, int min, int max, int modifier) {
-		if( index % b.size() != 0 && this.probs[index-1] != 0 )
-			this.probs[index-1] = this.probs[index-1] + (rand.nextInt(max-min) + min) * modifier;
-		if( index % b.size() != b.size()-1 && this.probs[index+1] != 0 )
-			this.probs[index+1] = this.probs[index+1] + (rand.nextInt(max-min) + min) * modifier;
-		if( index / b.size() != 0 && this.probs[((index/b.size())-1) * b.size() + index % b.size()] > 0 ) {
-			int north = ((index/b.size())-1) * b.size() + index % b.size();
-			this.probs[north] = this.probs[north] + (rand.nextInt(max-min) + min) * modifier;
-		}
-		if( index / b.size() != b.size()-1 && this.probs[((index/b.size())+1) * b.size() + index % b.size()] > 0 ) {
-			int south = ((index/b.size())+1) * b.size() + index % b.size();
-			this.probs[south] = this.probs[south] + (rand.nextInt(max-min) + min) * modifier;
-		}
-	}
-	
-	private int getNext() {
-		int index = 0;
-		int prob = 0;
-		for( int i = 0; i < probs.length; i++ ) {
-			if( probs[i] != 0 && probs[i] > prob ) {
-				prob = probs[i];
-				index = i;
-			} else if( probs[i] != 0 && probs[i] == prob && rand.nextInt(2) > 0 ) {
-				prob = probs[i];
-				index = i;
-			}
-		}
-		
-		return index;
-	}
 }
