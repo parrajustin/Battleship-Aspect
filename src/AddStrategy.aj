@@ -8,11 +8,17 @@ import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import ai.*;
+import ai.DebugSmart;
+import ai.RandomAI;
+import ai.Smart;
+import ai.Strategy;
 import battleship.BattleshipDialog;
 import battleship.BoardPanel;
 import battleship.model.Board;
@@ -27,7 +33,7 @@ privileged aspect AddStrategy {
 	private JPanel ships;
 	private Board board;
 	private BoardPanel panel;
-	private Smart ai;
+	private Strategy ai;
 	
 	private ArrayList<Place> places;
 	
@@ -232,7 +238,13 @@ privileged aspect AddStrategy {
 		if( temp != p.isHit() && this.playMode ) {
 			Random rand = new Random();
 //			System.out.println(this.places.get(rand.nextInt(this.places.size())).x);
-			ai.fire();
+			if( !ai.isGameOver() )
+				ai.fire();
+			if( ai.isGameOver() ) {
+				int dialogButton = JOptionPane.YES_OPTION;
+				JOptionPane.showConfirmDialog(null, "You've lost! :(", "Warning", dialogButton);
+			}
+			
 			this.panel.repaint();
 		}
 //		BoardPanel boardPane = (BoardPanel) thisJoinPoint.getThis();
@@ -304,12 +316,35 @@ privileged aspect AddStrategy {
 	}
 	
 	public void playButtonClicked(ActionEvent event) {
-		if( !playMode )
-			playMode = true;
-		else
-			resetPlayMode();
-		this.dialogHolder.startNewGame();
-		this.ships.setVisible(playMode);
+		JPanel panel = new JPanel();
+        panel.add(new JLabel("Please make a selection:"));
+        DefaultComboBoxModel model = new DefaultComboBoxModel();
+        model.addElement("Random");
+        model.addElement("Smart");
+        model.addElement("Debug Smart");
+        JComboBox comboBox = new JComboBox(model);
+        panel.add(comboBox);
+        
+        int result = JOptionPane.showConfirmDialog(null, panel, "Flavor", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+        switch (result) {
+            case JOptionPane.OK_OPTION:
+                if( comboBox.getSelectedItem() == "Random" )
+                	this.ai = new RandomAI(this.panel, this.board, this.places);
+                else if( comboBox.getSelectedItem() == "Smart" )
+                	this.ai = new Smart(this.panel, this.board, this.places);
+                else if( comboBox.getSelectedItem() == "Debug Smart" )
+                	this.ai = new DebugSmart(this.panel, this.board, this.places);
+                
+                
+        		if( !playMode )
+        			playMode = true;
+        		else
+        			resetPlayMode();
+        		this.dialogHolder.startNewGame();
+        		this.ships.setVisible(playMode);
+                break;
+        }
+	
 	}
 	
 }
