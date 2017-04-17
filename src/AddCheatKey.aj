@@ -16,12 +16,17 @@ import battleship.model.Place;
 privileged aspect AddCheatKey {
 	public boolean cheatModeActive = false;
 	
+	/**
+	 * Done after the draw places method has been called, if cheat mode is active all ships will be lit up
+	 * @param g
+	 */
 	void around(Graphics g): args(g) && this(BoardPanel) && call(void BoardPanel.drawPlaces(Graphics)) {
 		BoardPanel panel = (BoardPanel) thisJoinPoint.getThis();
 		
 		proceed(g);
 		
-		if( cheatModeActive ) {
+//		System.out.println(panel.getParent().getY());
+		if( cheatModeActive || panel.getParent().getY() > 0 ) {
 	        final Color oldColor = g.getColor();
 	        for (Place p: panel.board.places()) {
 	    		if (p.hasShip() && !p.isHit()) {
@@ -34,6 +39,9 @@ privileged aspect AddCheatKey {
 		}
 	}
 	
+	/**
+	 * Inject action map into the board panel constructor
+	 */
 	after(): execution(BoardPanel.new(Board)) && this(BoardPanel) {
 		BoardPanel panel = (BoardPanel) thisJoinPoint.getThis();
 		
@@ -45,6 +53,9 @@ privileged aspect AddCheatKey {
 	    actionMap.put(cheat, new KeyAction(panel, cheat));
 	}
 	
+	/**
+	 * Done to intersect the key action 
+	 */
 	after(): this(KeyAction) && execution(void KeyAction.actionPerformed(..)) {
 		KeyAction key = (KeyAction) thisJoinPoint.getThis();
 		
