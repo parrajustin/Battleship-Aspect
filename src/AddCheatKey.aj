@@ -25,7 +25,6 @@ privileged aspect AddCheatKey {
 		
 		proceed(g);
 		
-//		System.out.println(panel.getParent().getY());
 		if( cheatModeActive || panel.getParent().getY() > 0 ) {
 	        final Color oldColor = g.getColor();
 	        for (Place p: panel.board.places()) {
@@ -53,21 +52,20 @@ privileged aspect AddCheatKey {
 	    actionMap.put(cheat, new KeyAction(panel, cheat));
 	}
 	
-	/**
-	 * Done to intersect the key action 
-	 */
-	after(): this(KeyAction) && execution(void KeyAction.actionPerformed(..)) {
-		KeyAction key = (KeyAction) thisJoinPoint.getThis();
-		
-		// if this key action was for the one for cheats do the cheat action
-		if( key.getValue(key.action).equals("Cheat") ) {
-			cheatModeActive = !cheatModeActive; // enable cheat mode to highlight ships
-			key.boardPanel.paint(key.boardPanel.getGraphics()); // call the paint method to actually run the ship highlight advice
-		}
-	}
-}
-
-@SuppressWarnings("serial") class KeyAction extends AbstractAction {
+//	/**
+//	 * Done to intersect the key action 
+//	 */
+//	after(): this(KeyAction) && execution(void KeyAction.actionPerformed(..)) {
+//		KeyAction key = (KeyAction) thisJoinPoint.getThis();
+//		
+//		// if this key action was for the one for cheats do the cheat action
+//		if( key.getValue(key.action).equals("Cheat") ) {
+//			cheatModeActive = !cheatModeActive; // enable cheat mode to highlight ships
+//			key.boardPanel.paint(key.boardPanel.getGraphics()); // call the paint method to actually run the ship highlight advice
+//		}
+//	}
+	
+	@SuppressWarnings("serial") class KeyAction extends AbstractAction {
 	   public final BoardPanel boardPanel;
 	   public final String action = ACTION_COMMAND_KEY;
 	   
@@ -78,6 +76,8 @@ privileged aspect AddCheatKey {
 	   
 	   /** Called when a cheat is requested. */
 	   public void actionPerformed(ActionEvent event) {
-		   // nothing
+		   cheatModeActive = !cheatModeActive; // enable cheat mode to highlight ships
+		   this.boardPanel.paint(this.boardPanel.getGraphics()); // call the paint method to actually run the ship highlight advice
 	   }   
 	}
+}

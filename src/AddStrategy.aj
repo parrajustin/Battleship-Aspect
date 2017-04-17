@@ -2,18 +2,23 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 
 import ai.DebugSmart;
 import ai.RandomAI;
@@ -27,7 +32,6 @@ import battleship.model.Ship;
 
 
 privileged aspect AddStrategy {
-	private JButton playButton = new JButton("Play");
 	private boolean playMode = false;
 	private BattleshipDialog dialogHolder = null;
 	private JPanel ships;
@@ -46,6 +50,7 @@ privileged aspect AddStrategy {
 			this.dialogHolder = dialog;
 		}
 		
+		JButton playButton = new JButton("Play");
 		dialog.playButton.setText("practice");
 		JPanel buttons = (JPanel) dialog.playButton.getParent();
 		buttons.add(playButton);
@@ -212,11 +217,28 @@ privileged aspect AddStrategy {
 		proceed();	
 	}
 	
+	/**
+	 * Change the size of the battleship dialog
+	 */
+	after(): execution(BattleshipDialog.new()) && this(BattleshipDialog) {
+		BattleshipDialog dialog = (BattleshipDialog) thisJoinPoint.getThis();
+		
+		dialog.setSize(new Dimension(335, 570));
+	}
+	
+	/**
+	 * Resets the battleship play mode
+	 */
 	public void resetPlayMode() {
 		this.board.reset();
 		this.placeShips(this.board);
 	}
 	
+	/**
+	 * Action taken when the play button is clicked
+	 * It brings up a confirm dialog
+	 * @param event
+	 */
 	public void playButtonClicked(ActionEvent event) {
 		JPanel panel = new JPanel();
         panel.add(new JLabel("Please make a selection:"));
