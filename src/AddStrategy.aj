@@ -37,18 +37,6 @@ privileged aspect AddStrategy {
 	
 	private ArrayList<Place> places;
 	
-	JButton[] mineButtons;
-	JButton[] subButtons;
-	JButton[] frigButtons;
-	JButton[] battleButtons;
-	JButton[] carrierButtons;
-	
-	int mineI = 0;
-	int subI = 0;
-	int frigI = 0;
-	int battleI = 0;
-	int carrierI = 0;
-	
 	/**
 	 * Creates the practice button
 	 * @param dialog
@@ -77,9 +65,9 @@ privileged aspect AddStrategy {
 		container.setLayout(new BoxLayout(container, BoxLayout.X_AXIS));
 		
 		JPanel view = new JPanel();
-		view.setLayout(new BoxLayout(view, BoxLayout.Y_AXIS));
+		view.setLayout(new BoxLayout(view, BoxLayout.X_AXIS));/*Changed to X_AXIS*/
 		view.setBorder(BorderFactory.createBevelBorder(0,Color.BLACK, Color.GRAY));
-		view.setPreferredSize(new Dimension(80, 150));
+		view.setPreferredSize(new Dimension(100, 150));
 
 		this.board = new Board(10);
 		this.placeShips(this.board);
@@ -225,47 +213,8 @@ privileged aspect AddStrategy {
 	}
 	
 	public void resetPlayMode() {
-		this.mineI = 0;
-		this.subI = 0;
-		this.battleI = 0;
-		this.frigI = 0;
-		this.carrierI = 0;
-		
-		for(JButton b: mineButtons) {
-			b.setForeground(Color.GRAY);
-			b.setBackground(Color.GRAY);
-		}
-		for(JButton b: subButtons) {
-			b.setForeground(Color.GRAY);
-			b.setBackground(Color.GRAY);
-		}
-		for(JButton b: frigButtons) {
-			b.setForeground(Color.GRAY);
-			b.setBackground(Color.GRAY);
-		}
-		for(JButton b: battleButtons) {
-			b.setForeground(Color.GRAY);
-			b.setBackground(Color.GRAY);
-		}
-		for(JButton b: carrierButtons) {
-			b.setForeground(Color.GRAY);
-			b.setBackground(Color.GRAY);
-		}
-		
 		this.board.reset();
-		
-		int size = board.size();
-		Random random = new Random();
-        for (Ship ship : board.ships()) {
-            int i = 0;
-            int j = 0;
-            boolean dir = false;
-            do {
-                i = random.nextInt(size) + 1;
-                j = random.nextInt(size) + 1;
-                dir = random.nextBoolean();
-            } while (!board.placeShip(ship, i, j, dir));
-        }
+		this.placeShips(this.board);
 	}
 	
 	public void playButtonClicked(ActionEvent event) {
