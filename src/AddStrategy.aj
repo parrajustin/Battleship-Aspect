@@ -233,7 +233,8 @@ privileged aspect AddStrategy {
 	
 	void around(Place p): args(p) && call(void BoardPanel.placeClicked(Place)) && target(BoardPanel) {
 		boolean temp = p.isHit();
-		proceed(p);
+		if( !ai.isGameOver() )
+			proceed(p);
 		
 		if( temp != p.isHit() && this.playMode ) {
 			Random rand = new Random();
@@ -241,6 +242,7 @@ privileged aspect AddStrategy {
 			if( !ai.isGameOver() )
 				ai.fire();
 			if( ai.isGameOver() ) {
+				this.dialogHolder.showMessage("Game Over, You've Lost!");
 				int dialogButton = JOptionPane.YES_OPTION;
 				JOptionPane.showConfirmDialog(null, "You've lost! :(", "Warning", dialogButton);
 			}
