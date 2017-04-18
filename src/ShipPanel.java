@@ -7,6 +7,11 @@ import battleship.model.Board;
 import battleship.model.Place;
 import static battleship.Constants.*;
 
+/**
+ * Modified Board Panel used to signify the damage on the player's ships
+ * @author Sebasitan A.
+ *
+ */
 public class ShipPanel extends JPanel {
 	/**
      * Height of the blank space above the board panel in pixel. It is 10 by
@@ -54,7 +59,7 @@ public class ShipPanel extends JPanel {
     public ShipPanel(Board battleBoard, String name){
     	this(battleBoard, name,
         	   10, 0, DEFAULT_PLACE_SIZE,
-        	    DEFAULT_BOARD_COLOR, DEFAULT_HIT_COLOR, DEFAULT_MISS_COLOR);
+        	    Color.gray, DEFAULT_HIT_COLOR, DEFAULT_MISS_COLOR);
         }
     
     public ShipPanel(Board board, String name,
@@ -73,13 +78,19 @@ public class ShipPanel extends JPanel {
     	
     }
     
+    /**
+     * Adds more to the draw method so that the grid can be drawn
+     */
     public void paint(Graphics g) {
         super.paint(g); // clear the background
         drawGrid(g);
         drawPlaces(g);
     }
 
-    /*Modified code from BoardPanel*/
+    /**
+     * Modified from BoardPanel
+     * @param g the graphics object
+     */
     private void drawGrid(Graphics g) {
         Color oldColor = g.getColor(); 
 
@@ -104,7 +115,6 @@ public class ShipPanel extends JPanel {
         g.setColor(oldColor);
     }
     
-    /*Modified code from BoardPanel*/
     private void drawPlaces(Graphics g) {
         final Color oldColor = g.getColor();
         for (Place p: board.ship(shipName).places()) {

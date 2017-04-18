@@ -159,12 +159,6 @@ public class Smart extends Strategy {
 	
 	Stack<Probable> hitProbs;
 
-	/**
-	 * Smart constructor
-	 * @param p
-	 * @param b
-	 * @param places
-	 */
 	public Smart(BoardPanel p, Board b, ArrayList<Place> places) {
 		super(p, b, places);
 		
