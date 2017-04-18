@@ -189,12 +189,6 @@ privileged aspect AddStrategy {
 			
 			this.panel.repaint();
 		}
-//		BoardPanel boardPane = (BoardPanel) thisJoinPoint.getThis();
-//		if( !boardPane.board.isGameOver() && !p.isHit() ) {
-//			proceed(p);
-//			Random rand = new Random();
-//			this.places.get(rand.nextInt(this.places.size())).hit();
-//		}
 	}
 	
 	/**
