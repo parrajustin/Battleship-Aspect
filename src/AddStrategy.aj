@@ -16,10 +16,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ai.DebugSmart;
+import ai.EveryOther;
 import ai.RandomAI;
 import ai.Smart;
 import ai.Strategy;
-import ai.Under34;
 import battleship.BattleshipDialog;
 import battleship.BoardPanel;
 import battleship.model.Board;
@@ -250,7 +250,7 @@ privileged aspect AddStrategy {
                 else if( comboBox.getSelectedItem() == "Debug Smart" )
                 	this.ai = new DebugSmart(this.panel, this.board, this.places);
                 else if( comboBox.getSelectedItem() == "Every Other" )
-                	this.ai = new Under34(this.panel, this.board, this.places);
+                	this.ai = new EveryOther(this.panel, this.board, this.places);
                 
                 
         		if( !playMode )

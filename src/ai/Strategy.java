@@ -7,6 +7,11 @@ import battleship.BoardPanel;
 import battleship.model.Board;
 import battleship.model.Place;
 
+/**
+ * The abstract strategy class that the other strategys extend
+ * @author Justin P, Sebastian A, Luis R.
+ *
+ */
 public abstract class Strategy {
 	protected BoardPanel p;
 	protected Board b;

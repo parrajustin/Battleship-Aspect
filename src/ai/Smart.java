@@ -8,21 +8,40 @@ import battleship.BoardPanel;
 import battleship.model.Board;
 import battleship.model.Place;
 
+/**
+ * A Smart strategy that will randomly shoot at places till it finds a ship, then it will sink it
+ * @author Justin P
+ *
+ */
 public class Smart extends Strategy {
 	
 	/**
-	 * Used to indidate possible locations of a ship
-	 * @author jparra
+	 * Used to indicate where we are shooting at
+	 * @author Justin P
 	 *
 	 */
 	private class Probable {
 		int row;
 		int col;
 		int[] dirs;
+		/**
+		 * The direction this probable is being told to shoot at, a -1 means it is the root
+		 */
 		public int dir;
 		Random rand;
+		/**
+		 * The direction this probable told it's children to fire at
+		 */
 		public int guess;
 		
+		/**
+		 * Sets up this probable
+		 * @param row 0-index row
+		 * @param col 0-index column
+		 * @param rand a random object
+		 * @param dir the direction to fire at, -1 means root
+		 * @param s reference to the Smart class
+		 */
 		public Probable(int row, int col, Random rand, int dir, Smart s) {
 			this.row = row;
 			this.col = col;
@@ -71,8 +90,8 @@ public class Smart extends Strategy {
 		}
 		
 		/**
-		 * Gets a location to fire at
-		 * @return
+		 * Gets a direction opposite of the last direciton unless it isn't prossible if fires at a random location
+		 * @return [0] = row, [1]= 0 column
 		 */
 		public int[] getReverse() {
 			// make sure this probable has been used a direction
@@ -125,7 +144,7 @@ public class Smart extends Strategy {
 		}
 		
 		/**
-		 * Checks if a place can still fire a certain way
+		 * Checks to see if this probable has any ways that it can fire
 		 * @return
 		 */
 		public boolean isValid() {
@@ -290,7 +309,7 @@ public class Smart extends Strategy {
 
 	}
 	
-	public int[] resetString(Probable probable) {
+	private int[] resetString(Probable probable) {
 		int[] coords;
 		int row = probable.row;
 		int col = probable.col;
@@ -298,7 +317,9 @@ public class Smart extends Strategy {
 		
 		// find the root probable
 		while( probable.dir != -1 && hitProbs.size() > 0) {
-			System.out.println("whileLoop");
+			/*
+			 * Any valid probables that still have a live ship need to be saved
+			 */
 			if( probable.isValid() &&  this.getPlace(probable.row, probable.col).hasShip() && !this.getPlace(probable.row, probable.col).ship().isSunk() ) {
 				tempStack.push(probable);
 			}

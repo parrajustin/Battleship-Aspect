@@ -8,13 +8,18 @@ import battleship.model.Board;
 import battleship.model.Place;
 import battleship.model.Ship;
 
-public class Under34 extends Strategy {
+/**
+ * A strategy that will hit every other shot
+ * @author Justin P, Sebastian A, Luis R.
+ *
+ */
+public class EveryOther extends Strategy {
 	
 	int shotNumber = 0;
 	Ship ship = null;
 	private Stack<Place> shipPlaces;
 
-	public Under34(BoardPanel p, Board b, ArrayList<Place> places) {
+	public EveryOther(BoardPanel p, Board b, ArrayList<Place> places) {
 		super(p, b, places);
 		// TODO Auto-generated constructor stub
 	}
