@@ -140,6 +140,12 @@ public class Smart extends Strategy {
 	
 	Stack<Probable> hitProbs;
 
+	/**
+	 * Smart constructor
+	 * @param p
+	 * @param b
+	 * @param places
+	 */
 	public Smart(BoardPanel p, Board b, ArrayList<Place> places) {
 		super(p, b, places);
 		
@@ -147,6 +153,10 @@ public class Smart extends Strategy {
 		hitProbs.push(new Probable(this.random(0, b.size()), this.random(0, b.size()), this.rand, -1, this));
 	}
 	
+	/**
+	 * Retrieves a random location to shoot to
+	 * @return
+	 */
 	private Probable randomProb() {
 		int row;
 		int col;
@@ -171,8 +181,11 @@ public class Smart extends Strategy {
 		// something wrong with this probable get a good one
 		while( this.getPlace(row, col).isHit() || !this.validCoord(row, col) ) {
 			if( hitProbs.size() > 0 ) {
-				probable = hitProbs.pop();
-				
+				coords = resetString(probable);
+				row = coords[0];
+				col = coords[1];
+				int guess = coords[2];
+				Probable temp = new Probable(row, col, this.rand, guess, this);
 			} else
 				probable = this.randomProb();
 			
@@ -317,9 +330,6 @@ public class Smart extends Strategy {
 				probable = this.randomProb();
 			coords = this.resetString(probable);
 			return new int[]{coords[0], coords[1], coords[2]};
-		} else if( probable.dir != -1 && hitProbs.size() == 0 ) {
-			probable = this.randomProb();
-			return new int[]{probable.row, probable.col, -1};
 		} else {
 			probable = this.randomProb();
 			return new int[]{probable.row, probable.col, -1};
