@@ -13,11 +13,17 @@ import battleship.BoardPanel;
 import battleship.model.Board;
 import battleship.model.Place;
 
+/**
+ * 
+ * @author jrparra2
+ *
+ */
 privileged aspect AddCheatKey {
 	public boolean cheatModeActive = false;
 	
 	/**
 	 * Done after the draw places method has been called, if cheat mode is active all ships will be lit up
+	 * Or if this BoardPanel belongs to the computer board panel than color the ships
 	 * @param g
 	 */
 	void around(Graphics g): args(g) && this(BoardPanel) && call(void BoardPanel.drawPlaces(Graphics)) {
@@ -52,19 +58,11 @@ privileged aspect AddCheatKey {
 	    actionMap.put(cheat, new KeyAction(panel, cheat));
 	}
 	
-//	/**
-//	 * Done to intersect the key action 
-//	 */
-//	after(): this(KeyAction) && execution(void KeyAction.actionPerformed(..)) {
-//		KeyAction key = (KeyAction) thisJoinPoint.getThis();
-//		
-//		// if this key action was for the one for cheats do the cheat action
-//		if( key.getValue(key.action).equals("Cheat") ) {
-//			cheatModeActive = !cheatModeActive; // enable cheat mode to highlight ships
-//			key.boardPanel.paint(key.boardPanel.getGraphics()); // call the paint method to actually run the ship highlight advice
-//		}
-//	}
-	
+	/**
+	 * 
+	 * @author jparra
+	 *
+	 */
 	@SuppressWarnings("serial") class KeyAction extends AbstractAction {
 	   public final BoardPanel boardPanel;
 	   public final String action = ACTION_COMMAND_KEY;

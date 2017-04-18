@@ -13,6 +13,12 @@ public abstract class Strategy {
 	protected ArrayList<Place> places;
 	protected Random rand;
 	
+	/**
+	 * Strategy Class and children constructor
+	 * @param p	A board panel refrence used to repaint
+	 * @param b The board that contains the ships and places
+	 * @param places an array list for Place for easier access
+	 */
 	public Strategy(BoardPanel p, Board b, ArrayList<Place> places) {
 		this.p = p;
 		this.b = b;
@@ -26,35 +32,18 @@ public abstract class Strategy {
 	public abstract void fire();
 	
 	/**
-	 * Returns the value of the ai game
-	 * @return
+	 * Returns the game state
+	 * @return true if game is over
 	 */
 	public boolean isGameOver() {
 		return this.b.isGameOver();
 	}
 	
-//	public void 
-	
-//	private void change(int row, int col, int min, int max, int modifier) {
-//		if( index % b.size() != 0 && this.probs[index-1] != 0 )
-//			this.probs[index-1] = this.probs[index-1] + (rand.nextInt(max-min) + min) * modifier;
-//		if( index % b.size() != b.size()-1 && this.probs[index+1] != 0 )
-//			this.probs[index+1] = this.probs[index+1] + (rand.nextInt(max-min) + min) * modifier;
-//		if( index / b.size() != 0 && this.probs[((index/b.size())-1) * b.size() + index % b.size()] > 0 ) {
-//			int north = ((index/b.size())-1) * b.size() + index % b.size();
-//			this.probs[north] = this.probs[north] + (rand.nextInt(max-min) + min) * modifier;
-//		}
-//		if( index / b.size() != b.size()-1 && this.probs[((index/b.size())+1) * b.size() + index % b.size()] > 0 ) {
-//			int south = ((index/b.size())+1) * b.size() + index % b.size();
-//			this.probs[south] = this.probs[south] + (rand.nextInt(max-min) + min) * modifier;
-//		}
-//	}
-	
 	/**
 	 * Returns a value x where : min <= x < max
-	 * @param min
-	 * @param max
-	 * @return
+	 * @param min minimum value to return
+	 * @param max exclusive max value
+	 * @return min <= x < max
 	 */
 	protected int random(int min, int max) {
 		return this.rand.nextInt(max-min) + min;
@@ -62,9 +51,9 @@ public abstract class Strategy {
 	
 	/**
 	 * Check if a coordinate is valid
-	 * @param row
-	 * @param col
-	 * @return
+	 * @param row 0-index based row
+	 * @param col 0-index based column
+	 * @return boolean true if coordinate is valid
 	 */
 	protected boolean validCoord(int row, int col) {
 		return (row >= 0 && row < b.size() && col >= 0 && col < b.size());
@@ -72,9 +61,10 @@ public abstract class Strategy {
 	
 	/**
 	 * Retrieves a place based on its row and column
-	 * @param row
-	 * @param col
-	 * @return
+	 * 0 index
+	 * @param row 0-index based row
+	 * @param col 0-index based column
+	 * @return returns a random game Place
 	 */
 	protected Place getPlace(int row, int col) {
 		return this.places.get(row * b.size() + col);

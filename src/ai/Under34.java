@@ -19,6 +19,10 @@ public class Under34 extends Strategy {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Returns a coordinate to hit that doesn't have a ship
+	 * @return
+	 */
 	private int[] getNextShot() {
 		int row;
 		int col;
@@ -29,6 +33,10 @@ public class Under34 extends Strategy {
 		return new int[]{row, col};
 	}
 	
+	/**
+	 * Returns a ship 
+	 * @return Ship
+	 */
 	private Ship getNextShip() {
 		int row;
 		int col;
@@ -58,11 +66,17 @@ public class Under34 extends Strategy {
 		shotNumber++;
 	}
 	
+	/**
+	 * Fires a shot that is guaranteed to miss
+	 */
 	private void missShot() {
 		int[] coords = getNextShot();
 		this.b.hit(this.getPlace(coords[0], coords[1]));
 	}
 	
+	/**
+	 * Fires a shot that is guaranteed to hit
+	 */
 	private void hitShot() {
 		this.b.hit(this.shipPlaces.pop());
 	}
