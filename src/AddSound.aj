@@ -22,7 +22,7 @@ privileged aspect AddSound {
     	proceed(place);
     	
     	BoardPanel boardPane = (BoardPanel) thisJoinPoint.getTarget();
-    	if( (!place.hasShip() || !place.ship().isSunk()) && boardPane.getParent().getY() == 0 ) {
+    	if( (!place.hasShip() || !place.ship().isSunk()) && boardPane.getParent().getY() == 0 && !boardPane.board.isGameOver() ) {
     		
 			System.out.println("Board Hit");		
 			playAudio("miss.wav");
