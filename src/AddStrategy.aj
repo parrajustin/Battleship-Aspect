@@ -2,28 +2,24 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Random;
 
-import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 
 import ai.DebugSmart;
 import ai.RandomAI;
 import ai.Smart;
 import ai.Strategy;
+import ai.Under34;
 import battleship.BattleshipDialog;
 import battleship.BoardPanel;
 import battleship.model.Board;
@@ -246,6 +242,7 @@ privileged aspect AddStrategy {
         model.addElement("Random");
         model.addElement("Smart");
         model.addElement("Debug Smart");
+        model.addElement("Every Other");
         JComboBox comboBox = new JComboBox(model);
         panel.add(comboBox);
         
@@ -258,6 +255,8 @@ privileged aspect AddStrategy {
                 	this.ai = new Smart(this.panel, this.board, this.places);
                 else if( comboBox.getSelectedItem() == "Debug Smart" )
                 	this.ai = new DebugSmart(this.panel, this.board, this.places);
+                else if( comboBox.getSelectedItem() == "Every Other" )
+                	this.ai = new Under34(this.panel, this.board, this.places);
                 
                 
         		if( !playMode )

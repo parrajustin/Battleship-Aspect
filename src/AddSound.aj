@@ -21,8 +21,8 @@ privileged aspect AddSound {
     void around(Place place):  call(void BoardPanel.placeClicked(Place)) && args(place) && target(BoardPanel) {
     	proceed(place);
     	
-    	BoardPanel boardPane = (BoardPanel) thisJoinPoint.getThis();
-    	if( !place.hasShip() || !place.ship().isSunk() && boardPane.getParent().getY() == 0 ) {
+    	BoardPanel boardPane = (BoardPanel) thisJoinPoint.getTarget();
+    	if( (!place.hasShip() || !place.ship().isSunk()) && boardPane.getParent().getY() == 0 ) {
     		
 			System.out.println("Board Hit");		
 			playAudio("miss.wav");
@@ -35,7 +35,6 @@ privileged aspect AddSound {
     void around(Ship ship): call(void Board.notifyShipSunk(Ship)) && args(ship) && target(Board) {
     	proceed(ship);
     	
-    	Board board = (Board) thisJoinPoint.getThis();
     	if( ship.isSunk() ) {    	
 			System.out.println("YOU SUNK A SHIP");
 			playAudio("torpedo.wav");
